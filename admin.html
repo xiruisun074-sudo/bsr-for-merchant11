@@ -1,0 +1,39 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>商家提报 · 锁定名单管理</title><style>
+:root{font-family:system-ui,"Microsoft YaHei",sans-serif;color:#392b1e;background:#f5efe6}*{box-sizing:border-box}body{max-width:920px;margin:32px auto;padding:0 16px}main{padding:30px;background:white;border-radius:16px;box-shadow:0 8px 28px #54341512}h1{font-size:25px}h2{font-size:17px;margin-top:24px}p,small{line-height:1.75;color:#736454}input,textarea{width:100%;margin:8px 0;padding:12px;border:1px solid #d8c9b8;border-radius:9px;font:inherit}textarea{height:115px}button{padding:11px 18px;background:#9a6b3f;color:white;border:0;border-radius:8px;cursor:pointer;margin:6px 8px 6px 0}button.secondary{background:#eee6dc;color:#392b1e}.stats{display:flex;gap:9px;flex-wrap:wrap}.stats span{background:#f6eee3;padding:11px;border-radius:8px;flex:1;min-width:120px}#msg{padding:12px;background:#f7f2eb;border-radius:9px;white-space:pre-wrap;line-height:1.7}code{background:#f6eee3;padding:2px 5px}table{border-collapse:collapse;width:100%;font-size:13px}td,th{text-align:left;border-bottom:1px solid #eee;padding:9px}#preview{max-height:275px;overflow:auto} .tip{border-left:4px solid #c8792b;padding:8px 14px;background:#fff8ed}</style></head><body><main>
+<h1>商品 ID 锁定名单 · 买手管理台</h1><p>一款仅确认首位有效提报商家。文件都在浏览器本地处理，不上传第三方。<strong>只有完成问卷且核验有效的记录才应导入。</strong></p>
+<div class="stats"><span>当前锁定：<b id="total">0</b></span><span>本次新增：<b id="added">0</b></span><span>本次重复：<b id="duplicate">0</b></span><span>跳过无效：<b id="invalid">0</b></span></div>
+<h2>① 导入已有锁定名单（强烈建议）</h2><p>先从网站下载当前 <code>locked.json</code>，避免覆盖后把旧商品重新开放。</p><input type="file" id="jsonFile" accept=".json,application/json">
+<h2>② 导入问卷已提交记录</h2><p>导出 <b>CSV / TSV</b>；如果后台给的是 Excel，可打开 Excel 复制包含表头和数据的区域，粘贴到下方。文件必须包含「商品ID / gid」列。建议同时包含「提交时间」列，才能按提交先后识别第一位。</p><input type="file" id="csvFile" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values"><textarea id="paste" placeholder="粘贴 Excel 表格（含 商品ID、提交时间 表头）或逐行粘贴商品 ID"></textarea>
+<p><button id="process">识别并加入有效 ID</button><button id="reset" class="secondary">重置当前编辑结果</button></p><div id="msg">尚未导入记录。</div>
+<h2>③ 核对本次处理结果</h2><div id="preview"><table><thead><tr><th>结果</th><th>商品 ID</th><th>提交时间</th><th>说明</th></tr></thead><tbody id="rows"></tbody></table></div><button class="secondary" id="audit">下载核对明细 CSV</button>
+<h2>④ 生成并发布新锁定名单</h2><button id="download">下载 locked.json</button><p class="tip">把新下载的 <code>locked.json</code> 覆盖上传到 <code>index.html</code> 所在网站目录。仅下载文件不会改变线上状态。商家页约每 15 秒检查一次新名单；CDN 缓存须关闭或设置很短。</p><small>注意：前端只能禁止从此入口再次提报，不能阻止商家直接打开问卷提交。若没有有效提交时间，导出行序只能作为人工复核线索，不能证明谁先提交。</small>
+</main><script>
+const locked=new Set(),old=new Set(),audit=[];let raw='',rawName='';const $=x=>document.getElementById(x);
+const norm=s=>String(s??'').replace(/\s/g,'').toLowerCase();
+const id=s=>{s=String(s??'').trim().replace(/^#/,'').replace(/\.0$/,'');return /^\d{5,20}$/.test(s)?s:''};
+const idHeaders=new Set(['gid','商品id','商品编号','款式id','款式编号','推荐商品id','推荐款id']);
+const dateHeaders=new Set(['提交时间','答卷时间','完成时间','创建时间','提交日期','提交时间戳','submissiontime','submittedat']);
+const statusHeaders=new Set(['状态','答卷状态','提交状态','是否有效','审核状态']);
+const invalidStatus=new Set(['无效','作废','未完成','草稿','未提交','审核不通过','驳回','否','invalid','draft','rejected']);
+function stats(msg){$('total').textContent=locked.size;$('added').textContent=audit.filter(x=>x.result==='新增首条有效提报').length;$('duplicate').textContent=audit.filter(x=>x.result==='重复提报/原名单已有').length;$('invalid').textContent=audit.filter(x=>x.result==='已跳过').length;if(msg)$('msg').textContent=msg}
+function parse(t,sep){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(c==='"'){if(q&&t[i+1]==='"'){v+='"';i++}else q=!q}else if(c===sep&&!q){row.push(v);v=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&t[i+1]==='\n')i++;row.push(v);if(row.some(x=>x.trim()))rows.push(row);row=[];v=''}else v+=c}row.push(v);if(row.some(x=>x.trim()))rows.push(row);return rows}
+function chooseRows(t){t=t.replace(/^\ufeff/,'');const first=t.split(/\r?\n/,1)[0];let sep=first.includes('\t')?'\t':first.includes(';')&&!first.includes(',')?';':',';return parse(t,sep)}
+function time(s){s=String(s??'').trim();if(!s)return '';let v=s.replace(/年|\//g,'-').replace(/月/g,'-').replace(/日/g,'').replace(' ','T');let d=Date.parse(v);return Number.isFinite(d)?new Date(d).toISOString():''}
+function processText(t){let rows=chooseRows(t);if(!rows.length)throw Error('未找到记录');let header=rows[0].map(norm),ix=header.findIndex(x=>idHeaders.has(x)),ti=header.findIndex(x=>dateHeaders.has(x)),si=header.findIndex(x=>statusHeaders.has(x));let data=[];
+if(ix<0){if(rows.every(r=>r.length===1&&id(r[0]))){ix=0;data=rows.map((r,n)=>({row:n+1,g:id(r[0]),t:'',status:''}))}else throw Error('未找到商品 ID 列。请提供带「商品ID」表头的 CSV/Excel 内容，或直接逐行粘贴纯商品 ID。')}
+else data=rows.slice(1).map((r,n)=>({row:n+2,g:id(r[ix]),raw:r[ix]??'',t:ti>=0?time(r[ti]):'',badtime:ti>=0&&String(r[ti]??'').trim()&&!time(r[ti]),status:si>=0?norm(r[si]):''}));
+let valid=[];for(let item of data){if(!item.g||invalidStatus.has(item.status)||item.badtime){audit.push({result:'已跳过',g:item.g||String(item.raw??''),t:item.t,reason:!item.g?'商品 ID 无效':item.badtime?'提交时间无法识别':'无效/未提交状态'});continue}valid.push(item)}
+if(ti>=0&&valid.every(x=>x.t))valid.sort((a,b)=>a.t.localeCompare(b.t)||a.row-b.row);
+else if(ti>=0&&valid.some(x=>x.t))stats('警告：有记录缺少提交时间，暂按原文件行序处理；请人工复核最早提交记录。');
+for(let x of valid){let duplicated=locked.has(x.g);if(!duplicated)locked.add(x.g);audit.push({result:duplicated?'重复提报/原名单已有':'新增首条有效提报',g:x.g,t:x.t,reason:duplicated?(old.has(x.g)?'原锁定名单已有':'本次重复'):(x.t?'按提交时间/原行序确认':'无提交时间，须人工确认首位')})}
+render();stats(`已处理 ${data.length} 条记录。请核对结果并下载 locked.json。${ti<0?'\n注意：未识别到提交时间，无法证明最早提交顺序。':''}`)}
+function render(){const body=$('rows');body.replaceChildren();for(let a of audit.slice(-250)){let tr=document.createElement('tr');for(let v of [a.result,a.g,a.t,a.reason]){let td=document.createElement('td');td.textContent=v||'—';tr.appendChild(td)}body.appendChild(tr)}}
+$('jsonFile').onchange=async e=>{try{let f=e.target.files[0];if(!f)return;let d=JSON.parse(await f.text());if(!Array.isArray(d.locked))throw Error('缺少 locked 数组');let n=0;for(let v of d.locked){let g=id(v);if(g){if(!locked.has(g))n++;locked.add(g);old.add(g)}}stats(`导入已有名单：新增 ${n} 项，共 ${locked.size} 项`)}catch(e){stats('导入失败：'+e.message)}};
+$('csvFile').onchange=async e=>{try{let f=e.target.files[0];if(!f)return;let buf=await f.arrayBuffer();let dec=new TextDecoder('utf-8',{fatal:true});try{raw=dec.decode(buf)}catch(e){raw=new TextDecoder('gb18030').decode(buf)}rawName=f.name;stats(`已加载 ${f.name}，请点击「识别并加入有效 ID」`)}catch(e){stats('读取失败：'+e.message)}};
+$('process').onclick=()=>{try{const pasted=$('paste').value.trim(),source=pasted||raw;if(!source)throw Error('请先选择文件或粘贴记录');processText(source)}catch(e){stats('处理失败：'+e.message)}};
+$('reset').onclick=()=>{if(confirm('清空本页所有已导入内容？不影响服务器上的文件。')){locked.clear();old.clear();audit.length=0;raw='';$('paste').value='';$('csvFile').value='';$('jsonFile').value='';render();stats('已重置。')}};
+function download(name,t,mime){let url=URL.createObjectURL(new Blob([t],{type:mime})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+$('download').onclick=()=>download('locked.json',JSON.stringify({locked:[...locked].sort(),updated:new Date().toISOString()},null,2)+'\n','application/json;charset=utf-8');
+const quote=s=>'"'+String(s??'').replace(/"/g,'""')+'"';
+$('audit').onclick=()=>download('提报核对明细.csv','\ufeff'+[['结果','商品 ID','提交时间','备注'],...audit.map(x=>[x.result,x.g,x.t,x.reason])].map(r=>r.map(quote).join(',')).join('\r\n'),'text/csv;charset=utf-8');
+</script></body></html>
