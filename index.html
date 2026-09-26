@@ -110,29 +110,27 @@ body{
 }
 .card .img-wrap img{width:100%;height:100%;object-fit:contain;display:block}
 .card .img-wrap .badge{
-  position:absolute;top:9px;left:9px;max-width:calc(100% - 18px);
-  background:rgba(58,42,27,.88);color:#fff;
-  font-size:11px;font-weight:600;line-height:1.35;padding:5px 9px;border-radius:7px;z-index:2;
-  overflow-wrap:anywhere;backdrop-filter:blur(2px);
+  position:absolute;top:8px;left:8px;background:rgba(58,42,27,.82);color:#fff;
+  font-size:10px;font-weight:600;padding:4px 9px;border-radius:8px;z-index:2;backdrop-filter:blur(2px);
+  max-width:calc(100% - 66px);line-height:1.35;white-space:normal;word-break:break-word;text-align:left;
 }
 .card .img-wrap .zoom{
   position:absolute;bottom:8px;right:8px;background:rgba(255,255,255,.92);color:var(--dark);
   font-size:11px;padding:3px 9px;border-radius:12px;opacity:0;transition:opacity .15s;z-index:2;
 }
 .card .img-wrap:hover .zoom{opacity:1}
-.card .body{padding:12px;display:flex;flex-direction:column;flex:1;gap:7px}
-.card .title-row{min-height:22px;display:flex;align-items:center}
+.card .body{padding:11px 12px 13px;display:flex;flex-direction:column;flex:1}
+.card .title-row{display:flex;justify-content:space-between;align-items:center;gap:6px}
 .card .gid{font-size:13px;font-weight:800;color:var(--dark);letter-spacing:.3px}
-
-.card .meta{font-size:12px;color:#6B5A45;line-height:1.6;min-height:38px}
+.card .meta{font-size:11.5px;color:#6B5A45;margin-top:6px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .meta .mico{font-size:11px}
-.card .fine-tag{font-size:11px;color:#8A7A68;line-height:1.5;min-height:33px}
+.card .fine-tag{font-size:11px;color:#8A7A68;margin-top:4px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .card .link-item{
-  font-size:11.5px;color:#8A7A68;line-height:1.6;min-height:53px;
+  margin-top:7px;font-size:11px;color:#8A7A68;line-height:1.55;flex:1;align-items:flex-start;
   background:#FBF6EE;border:1px dashed #D9CDBB;border-radius:7px;padding:6px 9px;
 }
 .card .link-item .lnk-ico{font-size:11px}
-.card .btns{margin-top:auto;padding-top:5px;display:flex;gap:8px}
+.card .btns{margin-top:10px;display:flex;gap:8px}
 .btn{
   flex:1;border:none;border-radius:8px;padding:9px 10px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;
 }
@@ -175,7 +173,7 @@ body{
 .warn-tip.show{display:block}
 .input-row{margin-top:12px}
 .field{margin-top:8px}
-.size-placeholder{border:1.5px dashed #C6CFE0;border-radius:9px;background:linear-gradient(180deg,#FBFCFE,#F4F7FC);padding:22px 16px;text-align:center}
+.size-placeholder{border:1.5px dashed #C6CFE0;border-radius:9px;background:linear-gradient(180deg,#FBFCFE,#F4F7FC);padding:22px 16px;text-align:center;cursor:default}
 .size-placeholder .sp-ico{font-size:30px;line-height:1;margin-bottom:8px;opacity:.75}
 .size-placeholder .sp-txt{font-size:14px;font-weight:600;color:#5B6472}
 .size-placeholder .sp-sub{font-size:11.5px;color:#9AA5B1;margin-top:4px}
@@ -243,8 +241,8 @@ body{
 <div class="top-banner">
   <h1>🔥 爆款跟卖 · <span class="hl">必开款</span><br>同款提报 直接<span class="hl">流量扶持</span></h1>
   <div class="group-badge">📦 运动户外组 · 平台买手团队精选</div>
-  <div class="sub">同款提报以问卷提交及运营审核结果为准 · 商品状态请联系运营确认</div>
-  <div class="desc">平台买手团队精选高增长款式，欢迎商家核对商品信息并联系运营了解开款机会</div>
+  <div class="sub">每款仅限首位成功提报商家 · 同款开款即可获得流量扶持</div>
+  <div class="desc">平台买手团队精选 高增长服饰爆款，目前站内稀缺/无在售，开款即可抢占先机</div>
   <button class="banner-btn" onclick="openOps()">📞 查询对应运营联系方式</button>
 </div>
 
@@ -256,8 +254,8 @@ body{
     <div class="txt">
       <b>为什么推荐这些款？</b>以下款式均为近期高速增长的爆款（含同站点相似款式、同款不同版型等），
       已跑出优异销量数据，但<b>目前站内无在售 / 供给稀缺</b>。
-      商家可<b>开同款</b>或<b>提报已有的同款SPUID</b>，符合条件的款式可申请<b>流量扶持</b>，具体以运营审核为准。
-      <br><span style="font-size:12.5px;color:#A99C89">使用方法：点击商品「查看详情 / 开款」查看商品信息与上品路径 → 选择是否站内有同款 → 有同款进入问卷提报SPUID，无同款可联系运营沟通开款。商品图片均可点击放大查看原图细节。</span>
+      商家<b>开同款</b>或<b>提报已握有的同款SPUID</b>，即可获得<b>流量扶持</b>，先到先得、以运营核实为准！
+      <br><span style="font-size:12.5px;color:#A99C89">使用方法：点击商品「查看详情 / 开款」查看商品信息与上品路径 → 选择是否站内有同款 → 有同款进入问卷提报SPUID；无同款可点击「愿意开款」直接联系对应运营跟进。商品图片均可点击放大查看原图细节。</span>
     </div>
   </div>
 
@@ -408,10 +406,7 @@ function filtered(){
   });
 }
 
-// 图片按文件名排序分为六批，和仓库根目录的“第01批”至“第06批”对应。
-const IMAGE_BATCH = new Map([...new Set(DATA.map(r=>r.img))].sort().map((name,i)=>
-  [name, '第'+String(Math.floor(i/100)+1).padStart(2,'0')+'批/']));
-function imgSrc(rec){ return rec.img ? (IMAGE_BATCH.get(rec.img) || 'images/') + rec.img : ''; }
+function imgSrc(rec){ return rec.img?('images/'+rec.img):''; }
 
 /* ================= 网格 ================= */
 function renderGrid(){
@@ -428,13 +423,13 @@ function renderGrid(){
     card.innerHTML=
       '<div class="img-wrap" onclick="openViewer('+rec.idx+')">'+
         (rec.img?'<img loading="lazy" src="'+imgSrc(rec)+'" alt="">':'<span style="color:#bbb">无图</span>')+
-        '<span class="badge">'+escapeHtml(rec.style)+'</span>'+
+        '<span class="badge">'+rec.style+'</span>'+
         '<span class="zoom">🔍 点击放大看原图</span>'+
       '</div>'+
       '<div class="body">'+
-        '<div class="title-row"><span class="gid">#'+escapeHtml(rec.gid)+'</span></div>'+
-        '<div class="meta"><span class="mico">📍</span> <b>'+escapeHtml(rec.site)+'</b> ｜ <span class="mico">🏷️</span>'+escapeHtml(rec.fine)+'</div>'+
-        '<div class="fine-tag">尾部类目：'+escapeHtml(rec.tail)+'</div>'+
+        '<div class="title-row"><span class="gid">#'+rec.gid+'</span></div>'+
+        '<div class="meta"><span class="mico">📍</span> <b>'+rec.site+'</b> ｜ <span class="mico">🏷️</span>'+rec.fine+'</div>'+
+        '<div class="fine-tag" title="'+rec.tail+'">尾部类目：'+rec.tail+'</div>'+
         '<div class="link-item"><span class="lnk-ico">🔗</span> 同款链接：如需要商品链接，请及时和对应运营私聊。</div>'+
         '<div class="btns">'+
           '<button class="btn btn-blue" onclick="openDetail('+rec.idx+')">📝 查看详情 / 开款</button>'+
@@ -503,7 +498,7 @@ function buildQmBody(rec){
     '<div class="size-placeholder">'+
       '<div class="sp-ico">📐</div>'+
       '<div class="sp-txt">该款尺码表待补充</div>'+
-      '<div class="sp-sub">如需尺码信息，请联系对接运营</div>'+
+      '<div class="sp-sub">待尺码数据上线后可查看可选码段</div>'+
     '</div>'+
   '</div>'+
   /* 提报入口 */
@@ -515,15 +510,15 @@ function buildQmBody(rec){
     '</div>'+
     '<div class="input-row" id="spuWrap" style="display:none">'+
       '<label style="display:block;margin-bottom:8px">请通过问卷提报本款同款SPUID</label>'+
-      '<div style="font-size:12px;color:#6B7280;margin-bottom:10px;line-height:1.8">点击下方按钮打开提报问卷，填写店铺名称、商品ID和SPUID。点击时将尝试复制商品ID，请在问卷中粘贴或手动填写。</div>'+
+      '<div style="font-size:12px;color:#6B7280;margin-bottom:10px;line-height:1.8">点下方按钮进入提报问卷，填写店铺名称/商品ID/SPUID。商品ID已自动携带，打开问卷后粘贴即可。</div>'+
       '<div class="field"><button class="btn btn-orange" style="flex:none;width:100%;padding:12px 16px" onclick="goSurvey()">📝 去问卷提报本款</button></div>'+
       '<div style="margin-top:6px;font-size:12px;color:#6B7280" id="qGidHint"></div>'+
       '<div class="warn-tip" id="spuWarn">📋 请通过上方按钮进入问卷提报本款同款SPUID</div>'+
     '</div>'+
     '<div class="input-row" id="openWrap" style="display:none">'+
-      '<div class="phone-tip">💪 若无同款且愿意开款，请联系运营沟通该款及开款要求。</div>'+
+      '<div class="phone-tip">💪 若无同款且愿意开款，请点击下方「愿意开款」后<b>直接联系对应运营</b>（顶部可查联系方式），由运营协助跟进开款。</div>'+
       '<div class="yesno" style="margin-top:10px">'+
-        '<button class="yn-btn" id="openYes" onclick="setOpen(true)">💪 联系运营开款</button>'+
+        '<button class="yn-btn" id="openYes" onclick="setOpen(true)">💪 愿意开款</button>'+
         '<button class="yn-btn" id="openNo" onclick="setOpen(false)">🙅 暂不考虑</button>'+
       '</div>'+
     '</div>'+
@@ -536,19 +531,19 @@ function setHas(val){
   document.getElementById('spuWrap').style.display=val?'block':'none';
   document.getElementById('openWrap').style.display=val?'none':'block';
 }
+/* 说明：当前未接入后台保存开款意愿，避免误报"已记录"。改为明确引导商家联系对应运营。 */
 function setOpen(val){
   if(val){
-    const gid=curDetail && curDetail.gid;
+    showToast('💡 开款请直接联系对应运营，顶部可查联系方式','warn');
+    closeModal(); openOps();
+  }else{
+    showToast('💬 如需帮助可联系对应运营','warn');
     closeModal();
-    openOps();
-    showToast('联系运营时请提供商品ID：'+gid,'ok');
-  } else { closeModal(); }
+  }
 }
 function goSurvey(){
-  const gid=String(curDetail.gid);
-  let copied=false;
-  try{ const t=document.createElement('textarea'); t.value=gid; document.body.appendChild(t); t.select(); copied=document.execCommand('copy'); document.body.removeChild(t); }catch(e){}
-  showToast(copied?'已复制商品ID：'+gid+'，请在问卷中填写':'问卷中请填写商品ID：'+gid,copied?'ok':'warn');
+  try{ const t=document.createElement('textarea'); t.value='#'+curDetail.gid; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t);}catch(e){}
+  showToast('📝 已复制商品ID，打开问卷后粘贴','ok');
   window.open('https://seller.kuajingmaihuo.com/questionnaire?surveyId=206834139170','_blank');
 }
 
@@ -556,8 +551,8 @@ function goSurvey(){
 function copyText(text, btn){
   try{
     const t=document.createElement('textarea'); t.value=text; document.body.appendChild(t); t.select();
-    const copied=document.execCommand('copy'); document.body.removeChild(t);
-    showToast(copied?'📋 已复制':'复制失败，请手动选择文本',copied?'ok':'warn');
+    document.execCommand('copy'); document.body.removeChild(t);
+    showToast('📋 已复制','ok');
   }catch(e){ showToast('复制失败','warn'); }
 }
 
